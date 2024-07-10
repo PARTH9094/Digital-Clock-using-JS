@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock</title>
+
+    <script async src="//jsfiddle.net/xuLpwh3n/2embed/"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.min.js"
+        integrity="sha512-7IoDEsIJGxz/gNyJY/0LRtS45wDSvPFXGPuC7Fo4YueWMNOmWKMAllEqo2Im3pgOjeEwsOoieyliRgdkZnY0ow=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+
+    <style>
+        .main-clock {
+            display: flex;
+            gap: 70px;
+            padding: 250px;
+            text-align: center;
+            background-color: white;
+            padding-right: 100px;
+            width: 50%;
+            color: black;
+            margin: auto;
+
+        }
+
+        body {
+            background-color: #30353D;
+
+        }
+
+        #sec,
+        #min,
+        #hrs {
+            margin: 20px;
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+
+        .main {
+            display: flex;
+            margin-top: 250px;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            background-color: #30353D;
+            color: white;
+
+        }
+
+        .label {
+            font-size: 16px;
+            font-family: "Poppins", sans-serif;
+        }
+
+        #period {
+            font-size: 30px;
+            font-family: "Poppins", sans-serif;
+            position: absolute;
+            top: 275px;
+            left: 1100px;
+        }
+
+        .time {
+            font-size: 36px;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .minutes,
+        .seconds, .hours {
+            position: absolute;
+            top: 60px;
+            left: 65px;
+        }
+
+
+        .Circle {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .dots {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 10;
+        }
+
+        .dots::before {
+            position: absolute;
+            top: -68px;
+            width: 20px;
+            height: 20px;
+            background: var(--clr);
+            border-radius: 50%;
+            content: '';
+            box-shadow: 0 0 20px var(--clr), 0 0 60px var(--clr);
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+    <div class="main">
+        <div id="hrs" class="Circle" style="--clr:#ff2972;">
+            <div class="hours">
+
+                <div class="dots hrs_dot"></div>
+                <div class="time" id="hour">00</div>
+                <div class="label">HOURS</div>
+            </div>
+        </div>
+        <div id="min" class="Circle" style="--clr:#fee800;">
+            <div class="minutes">
+
+                <div class="dots min_dot"></div>
+                <div class="time" id="minute">00</div>
+                <div class="label">MINUTES</div>
+            </div>
+        </div>
+        <div id="sec" class="Circle">
+            <div class="seconds" style="--clr:#04fc43;">
+
+                <div class="dots sec_dot"></div>
+                <div class="time" id="second">00</div>
+                <div class="label">SECONDS</div>
+            </div>
+        </div>
+        <div class="am_pm">
+            <div id="period">AM/PM</div>
+        </div>
+    </div>
+
+
+
+
+</body>
+
+
+
+<script>
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    var seconds = now.getSeconds();
+    var isPM = hours >= 12;
+    function updateClock() {
+
+        now = new Date();
+        hours = now.getHours() % 12 || 12;
+        minutes = now.getMinutes();
+        seconds = now.getSeconds();
+        isPM = hours >= 12 ? "PM" : "AM";
+
+        bar?.set(seconds / 60);
+        bar1?.set(minutes / 60);
+        bar2?.set(hours / 12)
+        document.getElementById('hour').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minute').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('second').textContent = String(seconds).padStart(2, '0');
+        document.getElementById('period').textContent = isPM
+
+
+
+        let hrs_dot = document.querySelector('.hrs_dot');
+        let min_dot = document.querySelector('.min_dot');
+        let sec_dot = document.querySelector('.sec_dot');
+
+
+        hrs_dot.style.transform = `rotate(${hours * 30}deg)`;
+        min_dot.style.transform = `rotate(${minutes * 6}deg)`;
+        sec_dot.style.transform = `rotate(${seconds * 6}deg)`;
+
+
+
+        // Number from 0.0 to 1.0
+
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    var bar = new ProgressBar.Circle(sec, {
+        color: '#04fc43',
+        strokeWidth: 4,
+        trailWidth: 1,
+        duration: 1000,
+        step: function (state, circle) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
+        }
+    });
+
+    var bar1 = new ProgressBar.Circle(min, {
+        color: '#fee800',
+        strokeWidth: 4,
+        trailWidth: 1,
+        duration: 1000,
+        step: function (state, circle) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
+            circle.setText(minutes);
+        }
+    });
+    var bar2 = new ProgressBar.Circle(hrs, {
+        color: '#ff2972',
+        strokeWidth: 4,
+        trailWidth: 1,
+        duration: 1000,
+        step: function (state, circle) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
+            circle.setText(hours);
+        }
+    });
+
+
+</script>
+
+
+</html>
